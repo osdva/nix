@@ -151,6 +151,9 @@ in
         enabled = true;
         fingerprint = true;
         lock_before_suspend = true;
+        # No reveal animation on unlock.
+        transition = [ ];
+        transition_duration = 0.0;
       };
 
       location = {
