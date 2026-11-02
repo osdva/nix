@@ -89,7 +89,7 @@ fingerprint works again.
 
 ## 5. Cloud drives (rclone)
 
-`home/desktop.nix` mounts the rclone remotes `gdrive` at `~/google-drive` and
+`home/desktop/rclone.nix` mounts the rclone remotes `gdrive` at `~/google-drive` and
 `filen` at `~/filen`. The units stay inactive until `rclone.conf` exists.
 Create the remotes with `rclone config`:
 
@@ -146,5 +146,5 @@ nh search <pkg>              # search nixpkgs
 nh clean all --keep 5        # manual cleanup (weekly: keep 5 / 7 days)
 sudo nixos-rebuild switch --rollback          # undo the last switch
 nix fmt                      # format .nix files
-noctalia config export merged # Settings-UI changes, to copy into home/noctalia.nix
+noctalia config export merged # Settings-UI changes, to copy into home/desktop/noctalia.nix
 ```

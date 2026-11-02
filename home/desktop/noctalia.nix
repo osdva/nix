@@ -1,5 +1,5 @@
 # Noctalia v5 shell (bar, launcher, lock screen, idle, wallpaper). Imported by
-# home/desktop.nix. Written to ~/.config/noctalia/config.toml (read-only) and
+# home/desktop. Written to ~/.config/noctalia/config.toml (read-only) and
 # validated at build time. Changes made in the Settings UI are saved as
 # overrides in the state dir; `noctalia config export merged` prints them so
 # they can be copied back here.

@@ -2,7 +2,7 @@
 { pkgs, ... }:
 {
   imports = [
-    ./shell.nix
+    ./shell
     ./git.nix
     ./secrets.nix
   ];

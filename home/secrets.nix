@@ -13,7 +13,7 @@
       email = "me@osdva.dev";
       base_url = "https://api.bitwarden.eu"; # EU cloud (rbw maps identity too)
       lock_timeout = 3600 * 8;
-      pinentry = lib.mkDefault pkgs.pinentry-curses; # desktop.nix uses Qt
+      pinentry = lib.mkDefault pkgs.pinentry-curses; # home/desktop/rbw.nix uses the keyring
     };
   };
 }

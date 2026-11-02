@@ -8,7 +8,7 @@
   ...
 }:
 {
-  home-manager.users.${user}.imports = [ ../../../home/desktop.nix ];
+  home-manager.users.${user}.imports = [ ../../../home/desktop ];
 
   # --- Session ----------------------------------------------------------------
   programs.mango.enable = true;
@@ -44,7 +44,7 @@
   };
 
   # --- SSH agent: Bitwarden only ------------------------------------------------
-  # No competing agents; ssh/git talk to ~/.bitwarden-ssh-agent.sock (see home/desktop.nix).
+  # No competing agents; ssh/git talk to ~/.bitwarden-ssh-agent.sock (see home/desktop/bitwarden.nix).
   programs.ssh.startAgent = false;
   services.gnome.gcr-ssh-agent.enable = false;
   programs.gnupg.agent.enableSSHSupport = false;

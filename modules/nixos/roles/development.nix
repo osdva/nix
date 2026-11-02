@@ -1,7 +1,7 @@
-# Developer machine: containers, foreign binaries, toolchains (home/development.nix).
+# Developer machine: containers, foreign binaries, toolchains (home/development).
 { user, ... }:
 {
-  home-manager.users.${user}.imports = [ ../../../home/development.nix ];
+  home-manager.users.${user}.imports = [ ../../../home/development ];
 
   # Lets prebuilt binaries (Mason LSPs, npm native modules, etc.) run on NixOS.
   programs.nix-ld.enable = true;
