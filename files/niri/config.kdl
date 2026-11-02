@@ -99,7 +99,7 @@ binds {
     // Apps
     Mod+T { spawn "kitty"; }
     Mod+E { spawn "nautilus"; }
-    Mod+B { spawn "firefox"; }
+    Mod+B { spawn "zen-beta"; }
     Mod+P { spawn "bitwarden"; }
     Mod+N { spawn "obsidian"; }
     Mod+M { spawn "cider-2"; }

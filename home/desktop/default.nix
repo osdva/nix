@@ -8,6 +8,7 @@
     ./rbw.nix
     ./rclone.nix
     ./theme.nix
+    ./zen.nix
   ];
 
   # --- niri --------------------------------------------------------------------
@@ -26,9 +27,9 @@
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
-      "text/html" = "firefox.desktop";
-      "x-scheme-handler/http" = "firefox.desktop";
-      "x-scheme-handler/https" = "firefox.desktop";
+      "text/html" = "zen-beta.desktop";
+      "x-scheme-handler/http" = "zen-beta.desktop";
+      "x-scheme-handler/https" = "zen-beta.desktop";
       "application/pdf" = "org.kde.okular.desktop";
       "image/png" = "org.gnome.Loupe.desktop";
       "image/jpeg" = "org.gnome.Loupe.desktop";

@@ -26,6 +26,9 @@ let
     global_desktopSettings_minimizeToTray = true;
     # Started by the systemd unit below, not Bitwarden's own autostart file.
     global_desktopSettings_openAtLogin = false;
+    # Lets the Zen extension talk to the app (unlock with biometrics); the
+    # native messaging manifest is declared in zen.nix.
+    global_desktopSettings_browserIntegrationEnabled = true;
   };
   # Same server for the `bw` CLI.
   bitwardenCliSettings = {
