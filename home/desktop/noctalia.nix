@@ -81,7 +81,6 @@ in
           show_on_workspace_switch = true;
           start = [
             "workspaces"
-            "active_window"
             "media"
           ];
           center = [
