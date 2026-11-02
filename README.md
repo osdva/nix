@@ -3,7 +3,7 @@
 > machine:
 > thinkpad t14 gen 5 - intel ultra 5 135u - 64gb ddr5
 
-nixos + home manager flake for all my machines. mango, noctalia, bitwarden, nvim.
+nixos + home manager flake for all my machines. niri, noctalia, bitwarden, nvim.
 
 if you want to see what gets installed go to `./modules/nixos/roles/` and `./home/`
 

@@ -1,4 +1,4 @@
-# Graphical machine: mango + Noctalia, ly login, audio, fonts, desktop apps,
+# Graphical machine: niri + Noctalia, ly login, audio, fonts, desktop apps,
 # Bitwarden (SSH agent + fingerprint unlock).
 {
   config,
@@ -11,16 +11,16 @@
   home-manager.users.${user}.imports = [ ../../../home/desktop ];
 
   # --- Session ----------------------------------------------------------------
-  programs.mango.enable = true;
+  programs.niri.enable = true;
 
-  # Noctalia is started by home-manager inside the mango session.
+  # Noctalia is started by home-manager inside the niri session.
   programs.noctalia.enable = true;
   security.pam.services.noctalia = { };
 
-  # Login: ly (TUI). mango is the only session. Auth goes through
+  # Login: ly (TUI). niri is the only session. Auth goes through
   # the `login` PAM stack, which also unlocks gnome-keyring.
   services.displayManager = {
-    defaultSession = "mango";
+    defaultSession = "niri";
     ly = {
       enable = true;
       # Keys: `ly`'s config.ini (ly 1.5).
@@ -29,7 +29,7 @@
         clock = "%a %d %b  %H:%M";
         bigclock = "en";
         numlock = true;
-        # Only mango in the list (a plain TTY is on Ctrl+Alt+F2).
+        # Only niri in the list (a plain TTY is on Ctrl+Alt+F2).
         shell = false;
         xinitrc = null;
       };

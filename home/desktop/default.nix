@@ -1,5 +1,5 @@
 # Home Manager for graphical hosts (imported by the workstation role):
-# the mango session, terminal and default apps. Bigger topics live next to it.
+# the niri session, terminal and default apps. Bigger topics live next to it.
 {
   imports = [
     ./bitwarden.nix
@@ -9,11 +9,10 @@
     ./theme.nix
   ];
 
-  # --- mango -------------------------------------------------------------------
-  xdg.configFile."mango/config.toml".source = ../../files/mango/config.toml;
-
-  # Units tied to config.wayland.systemd.target (Noctalia) start only in mango.
-  wayland.systemd.target = "mango-session.target";
+  # --- niri --------------------------------------------------------------------
+  # niri-session starts niri.service, which binds graphical-session.target, so
+  # units on the default wayland.systemd.target (Noctalia) start with it.
+  xdg.configFile."niri/config.kdl".source = ../../files/niri/config.kdl;
 
   # --- Terminal ----------------------------------------------------------------
   programs.kitty = {

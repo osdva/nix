@@ -13,7 +13,7 @@ pi      = lib.mkHost { hostname = "pi"; system = "aarch64-linux"; roles = [ "ser
 
 | role          | gives you                                                         |
 | ------------- | ----------------------------------------------------------------- |
-| `workstation` | mango + Noctalia, ly login, audio, fonts, apps, Bitwarden SSH agent |
+| `workstation` | niri + Noctalia, ly login, audio, fonts, apps, Bitwarden SSH agent |
 | `laptop`      | hibernate policy, thermald (needs `boot.resumeDevice`)            |
 | `development` | Podman, nix-ld, language toolchains, nvim config                  |
 | `server`      | headless, networkd, passwordless sudo for remote deploys          |

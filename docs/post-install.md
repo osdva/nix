@@ -5,7 +5,7 @@ What to do after the first boot of a machine built from this flake
 
 ## 1. First login
 
-Log in at ly (mango is the only session). Then:
+Log in at ly (niri is the only session). Then:
 
 ```sh
 systemctl --user status noctalia bitwarden    # both should be active
@@ -15,8 +15,8 @@ If Noctalia is missing:
 
 ```sh
 journalctl --user -u noctalia -b
-systemctl --user status mango-session.target graphical-session.target
-mango -p                                      # validate ~/.config/mango/config.toml
+systemctl --user status niri graphical-session.target
+niri validate                                 # validate ~/.config/niri/config.kdl
 noctalia config validate ~/.config/noctalia/config.toml
 ```
 
