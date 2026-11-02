@@ -91,7 +91,6 @@ in
             "tray"
             "notifications"
             "keyboard_layout"
-            "cpu"
             "ram"
             "battery"
             "volume"
