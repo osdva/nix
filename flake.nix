@@ -11,6 +11,10 @@
       url = "github:NixOS/nixos-hardware";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -40,6 +44,24 @@
         # homelab = lib.mkHost { hostname = "homelab"; roles = [ "server" ]; };
         # pi      = lib.mkHost { hostname = "pi"; system = "aarch64-linux"; roles = [ "server" ]; };
       };
+
+      # `nix develop` (or direnv) installs the pre-commit hook: gitleaks blocks
+      # commits that stage a secret.
+      devShells = forAllSystems (
+        system:
+        let
+          hooks = inputs.git-hooks.lib.${system}.run {
+            src = ./.;
+            hooks.gitleaks.enable = true;
+          };
+        in
+        {
+          default = nixpkgs.legacyPackages.${system}.mkShell {
+            inherit (hooks) shellHook;
+            packages = hooks.enabledPackages;
+          };
+        }
+      );
 
       # `nix fmt`
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
