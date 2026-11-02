@@ -1,13 +1,16 @@
 # Git with SSH commit signing. The key comes from whatever agent is in
 # SSH_AUTH_SOCK (Bitwarden on workstations, a forwarded agent on servers),
 # so no private key or key path is hardcoded here.
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 let
+  email = "arthurvdinizs@gmail.com";
   # Public keys allowed to sign as me; used by `git log --show-signature`.
-  allowedSigners = pkgs.writeText "allowed_signers" ''
-    arthurvdinizs@gmail.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDfy+S7oSVnyEmriEYXcVM1Y6rLKWh/XNFVy96Oaz1nu
-    arthurvdinizs@gmail.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGHh2/DfPI+gJl2hEIh4hak/CdfISyrdKvrkSIthWkUD
-  '';
+  # Same keys that may SSH into every host (keys/osdva.pub).
+  allowedSigners = pkgs.writeText "allowed_signers" (
+    lib.concatMapStrings (key: "${email} ${key}\n") (
+      lib.filter (line: line != "") (lib.splitString "\n" (builtins.readFile ../keys/osdva.pub))
+    )
+  );
 in
 {
   programs.git = {
@@ -21,7 +24,7 @@ in
     settings = {
       user = {
         name = "Arthur Diniz";
-        email = "arthurvdinizs@gmail.com";
+        inherit email;
       };
       core.editor = "nvim";
       init.defaultBranch = "main";

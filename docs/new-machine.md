@@ -205,15 +205,12 @@ HOST=<name>   # e.g. tkpd, second-machine
 mkdir -p /tmp/nix/hosts/$HOST
 cp /mnt/etc/nixos/hardware-configuration.nix /tmp/nix/hosts/$HOST/
 
-# 2. Authorized keys (public data, safe to commit)
-curl -fsSL https://github.com/osdva.keys > /tmp/nix/hosts/$HOST/authorized_keys
-
-# 3. Host module — copy hosts/tkpd/default.nix as a template and adjust.
+# 2. Host module — copy hosts/tkpd/default.nix as a template and adjust.
 #    MUST fill in per host: hostname, bootloader/encryption (for Option A add
 #    boot.initrd.luks), hardware file import, real authentication.
 $EDITOR /tmp/nix/hosts/$HOST/default.nix
 
-# 4. Register it in flake.nix (inside nixosConfigurations = { ... }):
+# 3. Register it in flake.nix (inside nixosConfigurations = { ... }):
 #      $HOST = lib.mkHost { hostname = "$HOST"; roles = [ "workstation" "development" ]; };
 sed -i "/nixosConfigurations = {/a\\        $HOST = lib.mkHost { hostname = \"$HOST\"; roles = [ \"workstation\" \"development\" ]; };" \
   /tmp/nix/flake.nix
@@ -280,8 +277,8 @@ git add hosts/<name> && git commit -m "Add host <name>"
 sudo nixos-rebuild switch --flake "path:$PWD#<name>"
 ```
 
-4. Set up the Bitwarden SSH agent (docs/next-steps.md step 3), then migrate the
-   personal bits (accounts/vaults, VPN, printing, fingerprint enrollment).
+4. Follow `docs/post-install.md`: Bitwarden SSH agent, API keys, fingerprint,
+   cloud drives.
 
 ## Troubleshooting
 

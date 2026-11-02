@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  lib,
+  pkgs,
+  flakeDir,
+  ...
+}:
 {
   home.packages = with pkgs; [
     bat
@@ -44,13 +49,13 @@
       wf = "impala";
     };
     functions = {
-      # Edit the NixOS/Home Manager config (replaces the old stow-based `dot`).
+      # Edit the NixOS/Home Manager config.
       dot = ''
         set -l original_dir $PWD
-        cd ~/dev/nix && nvim $argv
+        cd ${flakeDir} && nvim $argv
         cd $original_dir
       '';
-      # Rebuild this machine from ~/dev/nix via nh (replaces the stow-based `udot`).
+      # Rebuild this machine from flakeDir via nh.
       udot = "nh os switch $argv";
       br = {
         wraps = "broot";
@@ -82,11 +87,6 @@
       set fzf_fd_opts --hidden --max-depth 5
 
       tmuxifier init - fish | source
-
-      # Unmanaged per-machine secrets (API keys); never put these in the repo.
-      if test -f ~/.config/fish/secrets.fish
-          source ~/.config/fish/secrets.fish
-      end
     '';
   };
 
@@ -130,7 +130,7 @@
     enable = true;
     prefix = "C-a";
     mouse = true;
-    shell = "${pkgs.fish}/bin/fish";
+    shell = lib.getExe pkgs.fish;
     terminal = "tmux-256color";
     plugins = with pkgs.tmuxPlugins; [
       # aserowy/tmux.nvim isn't in nixpkgs; pinned here.

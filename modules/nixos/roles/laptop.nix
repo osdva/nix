@@ -1,6 +1,6 @@
 # Portable machine: hibernation, lid/power-key behaviour, thermals.
 # The host must point boot.resumeDevice at a swap partition >= RAM.
-{ config, lib, ... }:
+{ config, ... }:
 {
   assertions = [
     {
@@ -9,14 +9,6 @@
     }
   ];
 
-  # The kernel disables hibernation while any process holds memfd_secret memory,
-  # and Bitwarden Desktop uses it for its key ("Using memfd_secret for secure key
-  # storage"), so with Bitwarden running /sys/power/disk shows [disabled].
-  # Turning memfd_secret off makes Bitwarden fall back to the kernel keyring
-  # (keyctl), which still keeps the key out of process memory.
-  boot.kernelParams = [ "secretmem.enable=0" ];
-
-  # Same policy as the Arch dotfiles (.cp/systemd/{logind,sleep}.conf.d).
   services.logind.settings.Login = {
     HandlePowerKey = "hibernate";
     HandlePowerKeyLongPress = "poweroff";

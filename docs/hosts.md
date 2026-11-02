@@ -28,16 +28,18 @@ CLI tools).
 hosts/<name>/
   default.nix                  imports hardware file, host quirks, stateVersion
   hardware-configuration.nix   from `nixos-generate-config` on that machine
-  authorized_keys              public keys allowed to SSH in
 ```
+
+SSH access comes from `keys/osdva.pub`, which core authorizes on every host.
+A host that should accept extra keys adds them with
+`users.users.${user}.openssh.authorizedKeys.keys`.
 
 Minimal `default.nix`:
 
 ```nix
-{ user, ... }:
+{ ... }:
 {
   imports = [ ./hardware-configuration.nix ];
-  users.users.${user}.openssh.authorizedKeys.keyFiles = [ ./authorized_keys ];
   system.stateVersion = "26.05"; # the release you installed; never bump it
 }
 ```
@@ -55,7 +57,6 @@ under `modules/nixos/services/` and be imported from the host.
 git clone git@github.com:osdva/nix.git ~/dev/nix && cd ~/dev/nix
 mkdir hosts/<name>
 cp /etc/nixos/hardware-configuration.nix hosts/<name>/
-curl -fsSL https://github.com/osdva.keys > hosts/<name>/authorized_keys
 $EDITOR hosts/<name>/default.nix flake.nix
 git add -A    # flakes only see files git knows about
 sudo nixos-rebuild switch --flake .#<name>
@@ -71,7 +72,7 @@ See [new-machine.md](new-machine.md).
 ## Homelab: deploy from the laptop
 
 The `server` role allows passwordless sudo for wheel, so you can deploy over SSH
-(your Bitwarden key needs to be in the server's `authorized_keys`):
+(your Bitwarden key needs to be in `keys/osdva.pub`):
 
 ```sh
 nixos-rebuild switch --flake ~/dev/nix#homelab --target-host homelab --sudo

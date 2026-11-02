@@ -1,6 +1,7 @@
 # Graphical machine: mango + Noctalia, ly login, audio, fonts, desktop apps,
 # Bitwarden (SSH agent + fingerprint unlock).
 {
+  config,
   lib,
   pkgs,
   user,
@@ -16,7 +17,7 @@
   programs.noctalia.enable = true;
   security.pam.services.noctalia = { };
 
-  # Login: ly (TUI, as on Arch). mango is the only session. Auth goes through
+  # Login: ly (TUI). mango is the only session. Auth goes through
   # the `login` PAM stack, which also unlocks gnome-keyring.
   services.displayManager = {
     defaultSession = "mango";
@@ -48,9 +49,16 @@
   services.gnome.gcr-ssh-agent.enable = false;
   programs.gnupg.agent.enableSSHSupport = false;
 
+  # The kernel disables hibernation while any process holds memfd_secret memory,
+  # and Bitwarden Desktop uses it for its key ("Using memfd_secret for secure key
+  # storage"), so with Bitwarden running /sys/power/disk shows [disabled].
+  # Turning memfd_secret off makes Bitwarden fall back to the kernel keyring
+  # (keyctl), which still keeps the key out of process memory. Only needed on
+  # hosts that hibernate (laptop role).
+  boot.kernelParams = lib.mkIf (config.boot.resumeDevice != "") [ "secretmem.enable=0" ];
+
   # --- Desktop plumbing ---------------------------------------------------------
   services.gnome.gnome-keyring.enable = true;
-  security.polkit.enable = true;
   security.rtkit.enable = true;
   services.gvfs.enable = true;
   programs.dconf.enable = true; # D-Bus service Home Manager's dconf.settings writes through

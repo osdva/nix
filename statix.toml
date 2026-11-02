@@ -1,0 +1,3 @@
+# repeated_keys: modules are grouped by topic with comment headers (e.g.
+# `programs.ssh` next to the Bitwarden unit it belongs to), not by top-level key.
+disabled = ["repeated_keys"]

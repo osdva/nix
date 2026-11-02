@@ -1,10 +1,12 @@
 # Everything every host gets: laptops, desktops and homelab servers.
 {
+  config,
   lib,
   pkgs,
   inputs,
   user,
   hostname,
+  flakeDir,
   ...
 }:
 {
@@ -48,7 +50,7 @@
   # project devShells don't get re-downloaded after every cleanup.
   programs.nh = {
     enable = true;
-    flake = "/home/${user}/dev/nix";
+    flake = flakeDir;
     clean = {
       enable = true;
       dates = "weekly";
@@ -90,9 +92,12 @@
   networking.networkmanager.enable = lib.mkDefault true;
   networking.firewall.enable = true;
 
-  # Key-only SSH. Each host lists its accepted keys in hosts/<name>/authorized_keys.
+  # Key-only SSH with the keys in keys/osdva.pub (hosts can add more). The port
+  # stays closed unless a role opens it (server.nix), so laptops on public
+  # networks don't expose sshd.
   services.openssh = {
     enable = true;
+    openFirewall = lib.mkDefault false;
     settings = {
       PermitRootLogin = "no";
       PasswordAuthentication = false;
@@ -117,6 +122,7 @@
       "networkmanager"
     ];
     shell = pkgs.fish;
+    openssh.authorizedKeys.keyFiles = [ ../../../keys/osdva.pub ];
   };
 
   environment.systemPackages = with pkgs; [
@@ -132,7 +138,18 @@
     useGlobalPkgs = true;
     useUserPackages = true;
     backupFileExtension = "hm-backup";
-    extraSpecialArgs = { inherit inputs user hostname; };
-    users.${user}.imports = [ ../../../home ];
+    extraSpecialArgs = {
+      inherit
+        inputs
+        user
+        hostname
+        flakeDir
+        ;
+    };
+    users.${user} = {
+      imports = [ ../../../home ];
+      # Like system.stateVersion: the release this host was first installed with.
+      home.stateVersion = lib.mkDefault config.system.stateVersion;
+    };
   };
 }

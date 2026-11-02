@@ -1,4 +1,4 @@
-# mango config, ported from the niri config in osdva/.dotfiles.
+# mango config.
 # Linked to ~/.config/mango/config.toml by home-manager. Check: `mango -p`.
 # Reference: https://github.com/DreamMaoMao/mango/wiki
 
@@ -24,7 +24,7 @@ sloppy_focus = 1
 warp_cursor = 1
 cursor_size = 24
 
-# --- Layout (scroller ≈ niri columns) ------------------------------------------
+# --- Layout (scroller) ----------------------------------------------------------
 scroller_default_proportion = 0.5
 scroller_default_proportion_single = 1.0
 scroller_proportion_preset = [0.33333, 0.5, 0.66667]
@@ -91,7 +91,7 @@ ELECTRON_OZONE_PLATFORM_HINT = "auto"
 "SUPER+SHIFT+r" = "reload_config"
 "SUPER+SHIFT+e" = "quit"
 
-# Focus (arrows + hjkl, like niri)
+# Focus (arrows + hjkl)
 "SUPER+Left" = "focusdir,left"
 "SUPER+Right" = "focusdir,right"
 "SUPER+Up" = "focusdir,up"
@@ -111,7 +111,7 @@ ELECTRON_OZONE_PLATFORM_HINT = "auto"
 "SUPER+CTRL+k" = "exchange_client,up"
 "SUPER+CTRL+j" = "exchange_client,down"
 
-# Stack windows into a column (niri consume/expel)
+# Stack windows into a column
 "SUPER+comma" = "scroller_stack,left"
 "SUPER+period" = "scroller_stack,right"
 

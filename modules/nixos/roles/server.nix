@@ -11,7 +11,7 @@
   #   nixos-rebuild switch --flake ~/dev/nix#homelab --target-host homelab --sudo
   security.sudo.wheelNeedsPassword = false;
 
-  services.openssh.openFirewall = true;
+  services.openssh.openFirewall = true; # core keeps it closed by default
   documentation.nixos.enable = false;
 
   # Keep running after the admin logs out (containers, tmux sessions).

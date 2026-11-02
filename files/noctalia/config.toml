@@ -1,4 +1,4 @@
-# Noctalia v5 config, ported from the v4 settings.json in osdva/.dotfiles.
+# Noctalia v5 config.
 # Linked into ~/.config/noctalia/config.toml by home-manager (read-only).
 # Changes made in the Settings UI are saved as overrides in the state dir;
 # `noctalia config export merged` prints them so they can be copied back here.
@@ -10,7 +10,7 @@ time_format = "{:%I:%M %p}"
 date_format = "%a, %b %d"
 telemetry_enabled = false
 setup_wizard_enabled = false
-polkit_agent = true # replaces the v4 polkit-agent plugin
+polkit_agent = true
 clipboard_enabled = true
 
     [shell.launcher]

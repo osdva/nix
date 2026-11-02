@@ -9,8 +9,8 @@ restructuring the repo.
 service credentials, user password hashes) with age and commit them. They are
 decrypted at activation into `/run/secrets`, never into the Nix store.
 
-**Why it would help:** today `~/.config/fish/secrets.fish` is unmanaged and has
-to be recreated on each machine. Homelab services almost always need secrets.
+**Why it would help:** rbw covers interactive use, but system services (homelab
+credentials, wifi, password hashes) need secrets at boot without a vault unlock.
 
 **How:**
 

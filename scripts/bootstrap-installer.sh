@@ -56,14 +56,9 @@ phase_write_files() {
 
   [[ -d $HOST_DIR ]] || mkdir -p "$HOST_DIR"
 
-  if [[ ! -s $HOST_DIR/authorized_keys ]]; then
-    curl -fsSL https://github.com/osdva.keys -o "$HOST_DIR/authorized_keys" ||
-      die "could not fetch https://github.com/osdva.keys; write authorized_keys by hand."
-  fi
-
   if [[ ! -f $HOST_DIR/default.nix ]]; then
     cat > "$HOST_DIR/default.nix" <<EOF
-{ user, ... }:
+{ ... }:
 {
   imports = [ ./hardware-configuration.nix ];
 
@@ -71,8 +66,6 @@ phase_write_files() {
   # boot.initrd.luks.devices."cryptroot".device = "/dev/disk/by-uuid/<uuid>";
   # Laptop role: point at the swap partition for hibernation.
   # boot.resumeDevice = "/dev/disk/by-uuid/<swap-uuid>";
-
-  users.users.\${user}.openssh.authorizedKeys.keyFiles = [ ./authorized_keys ];
 
   # TODO: set to the release being installed, then never bump it.
   system.stateVersion = "$(nixos-version | cut -d. -f1-2)";

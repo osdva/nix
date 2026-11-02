@@ -50,7 +50,7 @@ let
   };
   # Same server for the `bw` CLI.
   bitwardenCliSettings = {
-    global_environment_environment = bitwardenSettings.global_environment_environment;
+    inherit (bitwardenSettings) global_environment_environment;
   };
 
   applyBitwardenSettings = pkgs.writeShellScript "bitwarden-apply-settings" ''
@@ -124,7 +124,7 @@ in
   };
 
   # Start Bitwarden with the session so the SSH agent is there when you first
-  # `git push`. Unlock it with the fingerprint (docs/next-steps.md step 8).
+  # `git push`. Unlock it with the fingerprint (docs/post-install.md).
   systemd.user.services.bitwarden = {
     Unit = {
       Description = "Bitwarden (password manager + SSH agent)";
@@ -133,7 +133,7 @@ in
     };
     Service = {
       ExecStartPre = "${applyBitwardenSettings}";
-      ExecStart = "${pkgs.bitwarden-desktop}/bin/bitwarden";
+      ExecStart = lib.getExe pkgs.bitwarden-desktop;
       Restart = "on-failure";
     };
     Install.WantedBy = [ "graphical-session.target" ];
@@ -176,7 +176,7 @@ in
     };
     Service = {
       Type = "oneshot";
-      ExecStart = "${config.programs.rbw.package}/bin/rbw unlock";
+      ExecStart = "${lib.getExe config.programs.rbw.package} unlock";
       RemainAfterExit = true;
     };
     Install.WantedBy = [ "graphical-session.target" ];
@@ -217,7 +217,7 @@ in
     gtk.enable = true;
   };
   # Owns gtk-{3,4}.0/settings.ini and the matching dconf keys (what the settings
-  # portal hands to GTK4 apps like Nautilus), replacing Plasma's breeze leftovers.
+  # portal hands to GTK4 apps like Nautilus).
   # No theme/extraCss, so gtk.css stays Noctalia's.
   gtk = {
     enable = true;

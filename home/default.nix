@@ -1,9 +1,5 @@
 # Home Manager for every host (servers included): shell, git, CLI tools.
-{
-  pkgs,
-  user,
-  ...
-}:
+{ pkgs, ... }:
 {
   imports = [
     ./shell.nix
@@ -11,10 +7,9 @@
     ./secrets.nix
   ];
 
+  # username, homeDirectory and stateVersion come from the NixOS side
+  # (modules/nixos/core).
   home = {
-    username = user;
-    homeDirectory = "/home/${user}";
-    stateVersion = "26.05";
     sessionVariables = {
       EDITOR = "nvim";
       RIPGREP_CONFIG_PATH = "$HOME/.ripgreprc";
