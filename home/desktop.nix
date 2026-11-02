@@ -70,6 +70,33 @@ let
     merge "$HOME/.config/Bitwarden/data.json" ${pkgs.writeText "bitwarden.json" (builtins.toJSON bitwardenSettings)}
     merge "$HOME/.config/Bitwarden CLI/data.json" ${pkgs.writeText "bitwarden-cli.json" (builtins.toJSON bitwardenCliSettings)}
   '';
+  # FUSE mount of an rclone remote at ~/<dir> (used for the cloud drives below).
+  rcloneMount = remote: dir: {
+    Unit = {
+      Description = "rclone mount of ${remote}: at ~/${dir}";
+      ConditionPathExists = "%h/.config/rclone/rclone.conf";
+    };
+    Service = {
+      Type = "notify";
+      ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p %h/${dir}";
+      ExecStart = lib.concatStringsSep " " [
+        "${lib.getExe pkgs.rclone} mount ${remote}: %h/${dir}"
+        "--vfs-cache-mode writes"
+        "--vfs-cache-max-age 1h"
+        "--vfs-read-chunk-size 128M"
+        "--vfs-read-chunk-size-limit off"
+        "--buffer-size 256M"
+        "--poll-interval 15s"
+        "--dir-cache-time 1h"
+        "--timeout 1h"
+        "--umask 022"
+      ];
+      ExecStop = "/run/wrappers/bin/fusermount3 -u %h/${dir}";
+      Restart = "on-failure";
+      RestartSec = 10;
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
 in
 {
   # --- Bitwarden as the SSH agent -------------------------------------------
@@ -155,6 +182,12 @@ in
     Install.WantedBy = [ "graphical-session.target" ];
   };
 
+  # --- Cloud drives (rclone) -----------------------------------------------------
+  # One FUSE mount per rclone remote. The remotes (OAuth token / Filen login)
+  # aren't in the repo: create them once with `rclone config`, named as below.
+  systemd.user.services.rclone-gdrive = rcloneMount "gdrive" "google-drive";
+  systemd.user.services.rclone-filen = rcloneMount "filen" "filen";
+
   # --- mango -------------------------------------------------------------------
   xdg.configFile."mango/config.toml".source = ../files/mango/config.toml;
 
@@ -172,7 +205,8 @@ in
   xdg.configFile."kitty/kitty.conf".source = ../files/kitty/kitty.conf;
   xdg.configFile."kitty/current-theme.conf".source = ../files/kitty/current-theme.conf;
   xdg.configFile."ghostty/config".source = ../files/ghostty/config;
-  xdg.configFile."ghostty/themes/Kanagawa Dragon".source = ../files/ghostty/themes + "/Kanagawa Dragon";
+  xdg.configFile."ghostty/themes/Kanagawa Dragon".source =
+    ../files/ghostty/themes + "/Kanagawa Dragon";
 
   # --- Look & feel -------------------------------------------------------------
   home.pointerCursor = {

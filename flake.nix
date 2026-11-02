@@ -69,30 +69,13 @@
       # `nix flake check` builds every host's toplevel.
       checks = forAllSystems (
         system:
-        nixpkgs.lib.mapAttrs' (name: host: nixpkgs.lib.nameValuePair "host-${name}" host.config.system.build.toplevel) (
-          nixpkgs.lib.filterAttrs (_: host: host.pkgs.stdenv.hostPlatform.system == system) self.nixosConfigurations
-        )
+        nixpkgs.lib.mapAttrs'
+          (name: host: nixpkgs.lib.nameValuePair "host-${name}" host.config.system.build.toplevel)
+          (
+            nixpkgs.lib.filterAttrs (
+              _: host: host.pkgs.stdenv.hostPlatform.system == system
+            ) self.nixosConfigurations
+          )
       );
-
-      # Per-project toolchains instead of mise: `nix flake init -t ~/dev/nix#node`
-      templates = {
-        default = self.templates.devshell;
-        devshell = {
-          path = ./templates/devshell;
-          description = "Generic devShell + direnv";
-        };
-        node = {
-          path = ./templates/node;
-          description = "Node.js / pnpm / bun devShell + direnv";
-        };
-        python = {
-          path = ./templates/python;
-          description = "Python + uv devShell + direnv";
-        };
-        go = {
-          path = ./templates/go;
-          description = "Go devShell + direnv";
-        };
-      };
     };
 }

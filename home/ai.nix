@@ -86,4 +86,13 @@ in
     ".pi/agent/agents".source = ../files/pi/agents;
     ".pi/agent/prompts".source = ../files/pi/prompts;
   };
+
+  # --- opencode / crush ----------------------------------------------------------
+  # crush expands "$(cmd)" in its config itself; opencode only reads {env:...},
+  # so the wrapper hands it the Context7 key for that one process.
+  xdg.configFile."crush/crush.json".source = ../files/crush/crush.json;
+  xdg.configFile."opencode/opencode.json".source = ../files/opencode/opencode.json;
+  programs.fish.functions.opencode = ''
+    CONTEXT7_API_KEY=(${secret "CONTEXT7_API_KEY"} 2>/dev/null) command opencode $argv
+  '';
 }

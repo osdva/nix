@@ -1,6 +1,5 @@
 # Toolchains and dev tools (replaces mise). Global versions come from the
-# pinned nixpkgs; per-project versions come from a devShell + direnv
-# (`nix flake init -t ~/dev/nix#node`, then `direnv allow`).
+# pinned nixpkgs; per-project versions come from a devShell + direnv.
 {
   config,
   pkgs,
@@ -15,7 +14,7 @@ in
   home.packages = with pkgs; [
     # --- Global languages (was ~/.config/mise/config.toml) --------------------
     # Versions follow the pinned nixpkgs; bump with `nh os switch --update`.
-    # A project that needs another version gets a devShell (templates/).
+    # A project that needs another version gets a devShell.
 
     # JavaScript / TypeScript
     nodejs
@@ -97,4 +96,10 @@ in
   xdg.configFile."nvim/after".source = ../files/nvim/after;
   xdg.configFile."nvim/nvim-pack-lock.json".source =
     config.lib.file.mkOutOfStoreSymlink "${repo}/files/nvim/nvim-pack-lock.json";
+
+  # herdr installs plugins itself (state in plugins.json); only their config lives here.
+  xdg.configFile."herdr/config.toml".source = ../files/herdr/config.toml;
+  xdg.configFile."herdr/plugins/config/persiyanov.reviewr/config.toml".source =
+    ../files/herdr/reviewr.toml;
+  xdg.configFile."tuicr/config.toml".source = ../files/tuicr/config.toml;
 }

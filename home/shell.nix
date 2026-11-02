@@ -124,6 +124,7 @@
   xdg.configFile."broot/verbs.hjson".source = ../files/broot/verbs.hjson;
 
   xdg.configFile."lazygit/config.yml".source = ../files/lazygit/config.yml;
+  xdg.configFile."fastfetch/config.jsonc".source = ../files/fastfetch/config.jsonc;
 
   programs.tmux = {
     enable = true;

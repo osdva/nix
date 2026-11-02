@@ -196,13 +196,6 @@ nix fmt                      # format .nix files
 noctalia config export merged # Settings-UI changes, to copy into files/noctalia/config.toml
 ```
 
-New project toolchain:
-
-```sh
-nix flake init -t ~/dev/nix#node   # or #python, #go, #devshell
-direnv allow
-```
-
 New machine: `docs/hosts.md` (existing NixOS) or `docs/new-machine.md` (fresh install).
 
 ## Open decisions
