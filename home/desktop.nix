@@ -99,6 +99,8 @@ let
   };
 in
 {
+  imports = [ ./noctalia.nix ];
+
   # --- Bitwarden as the SSH agent -------------------------------------------
   # The settings above enable the agent; it serves the SSH keys stored in the
   # vault on the socket below once the vault is unlocked. Every shell, systemd
@@ -194,19 +196,12 @@ in
   # Units tied to config.wayland.systemd.target (Noctalia) start only in mango.
   wayland.systemd.target = "mango-session.target";
 
-  # --- Noctalia v5 ------------------------------------------------------------
-  programs.noctalia = {
-    enable = true;
-    systemd.enable = true;
-    settings = ../files/noctalia/config.toml; # validated at build time
-  };
-
   # --- Terminals ---------------------------------------------------------------
-  xdg.configFile."kitty/kitty.conf".source = ../files/kitty/kitty.conf;
-  xdg.configFile."kitty/current-theme.conf".source = ../files/kitty/current-theme.conf;
-  xdg.configFile."ghostty/config".source = ../files/ghostty/config;
-  xdg.configFile."ghostty/themes/Kanagawa Dragon".source =
-    ../files/ghostty/themes + "/Kanagawa Dragon";
+  programs.kitty = {
+    enable = true;
+    font.name = "CommitMono Nerd Font";
+    themeFile = "kanagawa_dragon"; # from kitty-themes
+  };
 
   # --- Look & feel -------------------------------------------------------------
   home.pointerCursor = {
@@ -248,9 +243,4 @@ in
       "inode/directory" = "org.gnome.Nautilus.desktop";
     };
   };
-
-  # Directories Noctalia's config points at.
-  home.activation.noctaliaDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    run mkdir -p "$HOME/Pictures/wallpapers" "$HOME/Pictures/Screenshots"
-  '';
 }

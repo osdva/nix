@@ -12,12 +12,19 @@
   home = {
     sessionVariables = {
       EDITOR = "nvim";
-      RIPGREP_CONFIG_PATH = "$HOME/.ripgreprc";
     };
     packages = [ pkgs.neovim ];
   };
 
-  home.file.".ripgreprc".source = ../files/ripgreprc;
+  # Writes ~/.config/ripgrep/ripgreprc and sets RIPGREP_CONFIG_PATH.
+  programs.ripgrep = {
+    enable = true;
+    arguments = [
+      "--hidden"
+      "--glob=!.git/*"
+      "--smart-case"
+    ];
+  };
 
   xdg.enable = true;
   programs.home-manager.enable = true;

@@ -8,7 +8,6 @@
   home.packages = with pkgs; [
     bat
     fd
-    ripgrep
     jq
     bottom
     fastfetch
@@ -23,7 +22,6 @@
     just
     difftastic
     delta
-    lazygit
     gitu
     gh
     tmuxifier
@@ -38,7 +36,6 @@
       cat = "bat";
       cd = "z";
       g = "gitu";
-      hd = "herdr";
       ls = "eza --color --icons --git -a";
       lsql = "lazysql";
       lzd = "lazydocker";
@@ -90,8 +87,15 @@
     '';
   };
 
-  programs.starship.enable = true;
-  xdg.configFile."starship.toml".source = ../files/starship.toml;
+  programs.starship = {
+    enable = true;
+    settings = {
+      add_newline = true;
+      character.success_symbol = "[➜](bold green)";
+      package.disabled = true;
+      git_metrics.disabled = false;
+    };
+  };
 
   programs.zoxide.enable = true;
   programs.eza.enable = true;
@@ -123,7 +127,32 @@
   xdg.configFile."broot/conf.hjson".source = ../files/broot/conf.hjson;
   xdg.configFile."broot/verbs.hjson".source = ../files/broot/verbs.hjson;
 
-  xdg.configFile."lazygit/config.yml".source = ../files/lazygit/config.yml;
+  # Tokyo Night colors.
+  programs.lazygit = {
+    enable = true;
+    settings.gui = {
+      nerdFontsVersion = "3";
+      theme = {
+        activeBorderColor = [
+          "#ff9e64"
+          "bold"
+        ];
+        inactiveBorderColor = [ "#27a1b9" ];
+        searchingActiveBorderColor = [
+          "#ff9e64"
+          "bold"
+        ];
+        optionsTextColor = [ "#7aa2f7" ];
+        selectedLineBgColor = [ "#283457" ];
+        cherryPickedCommitFgColor = [ "#7aa2f7" ];
+        cherryPickedCommitBgColor = [ "#bb9af7" ];
+        markedBaseCommitFgColor = [ "#7aa2f7" ];
+        markedBaseCommitBgColor = [ "#e0af68" ];
+        unstagedChangesColor = [ "#db4b4b" ];
+        defaultFgColor = [ "#c0caf5" ];
+      };
+    };
+  };
   xdg.configFile."fastfetch/config.jsonc".source = ../files/fastfetch/config.jsonc;
 
   programs.tmux = {

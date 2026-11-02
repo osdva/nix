@@ -1,8 +1,0 @@
-theme = "tokyo-night"
-default_scope = "branch"
-navigator_position = "left"
-toggle_placement = "tab"
-
-[keybindings]
-comment = ["c", "ㅊ"]
-select  = ["v", "ㅍ"]

@@ -111,8 +111,6 @@
   environment.systemPackages = with pkgs; [
     bitwarden-desktop
     bitwarden-cli
-    kitty
-    ghostty
     nautilus
     loupe
     vlc

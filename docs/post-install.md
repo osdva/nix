@@ -126,9 +126,6 @@ pi                                            # first run installs its npm: pack
 nvim                                          # vim.pack installs plugins, Mason installs LSPs
 ```
 
-In herdr, reinstall the reviewr plugin (`persiyanov/herdr-reviewr`); its config
-is already linked.
-
 ## 8. /etc/nixos
 
 Point `/etc/nixos` at the repo, so a plain `nixos-rebuild` finds this host:
@@ -149,5 +146,5 @@ nh search <pkg>              # search nixpkgs
 nh clean all --keep 5        # manual cleanup (weekly: keep 5 / 7 days)
 sudo nixos-rebuild switch --rollback          # undo the last switch
 nix fmt                      # format .nix files
-noctalia config export merged # Settings-UI changes, to copy into files/noctalia/config.toml
+noctalia config export merged # Settings-UI changes, to copy into home/noctalia.nix
 ```

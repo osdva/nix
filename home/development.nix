@@ -61,12 +61,6 @@
     lazydocker
     lazysql
     rclone
-
-    # AI / agents (Claude Code and pi: home/ai.nix)
-    opencode
-    crush
-    herdr
-    tuicr
   ];
 
   home.sessionVariables = {
@@ -94,10 +88,4 @@
   xdg.configFile."nvim/after".source = ../files/nvim/after;
   xdg.configFile."nvim/nvim-pack-lock.json".source =
     config.lib.file.mkOutOfStoreSymlink "${flakeDir}/files/nvim/nvim-pack-lock.json";
-
-  # herdr installs plugins itself (state in plugins.json); only their config lives here.
-  xdg.configFile."herdr/config.toml".source = ../files/herdr/config.toml;
-  xdg.configFile."herdr/plugins/config/persiyanov.reviewr/config.toml".source =
-    ../files/herdr/reviewr.toml;
-  xdg.configFile."tuicr/config.toml".source = ../files/tuicr/config.toml;
 }
