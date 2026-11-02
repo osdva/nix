@@ -21,6 +21,10 @@
       name = "Adwaita Sans";
       size = 11;
     };
+    # Electron (Bitwarden, Obsidian, ...) takes its first dark/light answer from
+    # GTK 3 and only gets the portal's color-scheme a moment later; some apps
+    # keep the first one. GTK 4/libadwaita warn about this key, so GTK 3 only.
+    gtk3.extraConfig.gtk-application-prefer-dark-theme = true;
   };
   dconf.settings."org/gnome/desktop/interface" = {
     color-scheme = "prefer-dark";
