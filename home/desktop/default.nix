@@ -3,6 +3,7 @@
 {
   imports = [
     ./bitwarden.nix
+    ./ivpn.nix
     ./noctalia.nix
     ./rbw.nix
     ./rclone.nix

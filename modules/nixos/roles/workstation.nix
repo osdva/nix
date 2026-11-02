@@ -108,6 +108,9 @@
 
   programs.firefox.enable = true;
 
+  # IVPN: daemon (ivpn-service) + CLI; the tray GUI is in home/desktop/ivpn.nix.
+  services.ivpn.enable = true;
+
   environment.systemPackages = with pkgs; [
     bitwarden-desktop
     bitwarden-cli
