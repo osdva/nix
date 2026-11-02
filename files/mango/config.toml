@@ -1,0 +1,176 @@
+# mango config, ported from the niri config in osdva/.dotfiles.
+# Linked to ~/.config/mango/config.toml by home-manager. Check: `mango -p`.
+# Reference: https://github.com/DreamMaoMao/mango/wiki
+
+[global]
+# Export the session env to systemd/dbus, then start mango-session.target,
+# which pulls in graphical-session.target (Noctalia, Bitwarden, portals).
+exec_once = [
+  "dbus-update-activation-environment --systemd --all && systemctl --user start mango-session.target",
+]
+
+# --- Input ---------------------------------------------------------------------
+xkb_rules_layout = "br,us"
+xkb_rules_variant = "thinkpad,"
+xkb_rules_options = "grp:alt_shift_toggle"
+numlock_on = 1
+repeat_rate = 25
+repeat_delay = 600
+tap_to_click = 1
+trackpad_natural_scrolling = 1
+mouse_natural_scrolling = 1
+trackpad_disable_while_typing = 1
+sloppy_focus = 1
+warp_cursor = 1
+cursor_size = 24
+
+# --- Layout (scroller ≈ niri columns) ------------------------------------------
+scroller_default_proportion = 0.5
+scroller_default_proportion_single = 1.0
+scroller_proportion_preset = [0.33333, 0.5, 0.66667]
+scroller_focus_center = 0
+scroller_prefer_center = 0
+
+# --- Appearance ----------------------------------------------------------------
+gap_inner_horizontal = 5
+gap_inner_vertical = 5
+gap_outer_horizontal = 5
+gap_outer_vertical = 5
+border_px = 2
+border_radius = 10
+focus_color = 0x7fc8ffff
+border_color = 0x505050ff
+urgent_color = 0x9b0000ff
+root_color = 0x00000000
+shadows = 1
+shadows_size = 30
+shadows_blur = 15
+shadows_position_y = 5
+shadows_color = 0x00000077
+animations = 1
+animation_type_open = "zoom"
+animation_type_close = "zoom"
+animation_duration_open = 250
+animation_duration_close = 250
+animation_duration_move = 250
+animation_duration_tag = 250
+
+[env]
+XCURSOR_SIZE = "24"
+QT_QPA_PLATFORM = "wayland;xcb"
+ELECTRON_OZONE_PLATFORM_HINT = "auto"
+
+[bind.default]
+# Apps
+"SUPER+t" = "spawn,kitty"
+"SUPER+e" = "spawn,nautilus"
+"SUPER+b" = "spawn,firefox"
+"SUPER+p" = "spawn,bitwarden"
+"SUPER+n" = "spawn,obsidian"
+"SUPER+m" = "spawn,cider-2"
+
+# Noctalia
+"SUPER+space" = "spawn_shell,noctalia msg panel-toggle launcher"
+"SUPER+ALT+l" = "spawn_shell,noctalia msg session lock"
+"SUPER+ALT+s" = "spawn_shell,pkill orca || exec orca"
+"NONE+XF86AudioRaiseVolume" = "spawn_shell,noctalia msg volume-up"
+"NONE+XF86AudioLowerVolume" = "spawn_shell,noctalia msg volume-down"
+"NONE+XF86AudioMute" = "spawn_shell,noctalia msg volume-mute"
+"NONE+XF86AudioMicMute" = "spawn_shell,noctalia msg mic-mute"
+"NONE+XF86MonBrightnessUp" = "spawn_shell,noctalia msg brightness-up"
+"NONE+XF86MonBrightnessDown" = "spawn_shell,noctalia msg brightness-down"
+
+# Window management
+"SUPER+q" = "killclient,"
+"SUPER+o" = "toggleoverview,"
+"SUPER+r" = "switch_proportion_preset,"
+"SUPER+f" = "togglemaximizescreen,"
+"SUPER+SHIFT+f" = "togglefullscreen,"
+"SUPER+v" = "togglefloating,"
+"SUPER+c" = "centerwin,"
+"SUPER+SHIFT+r" = "reload_config"
+"SUPER+SHIFT+e" = "quit"
+
+# Focus (arrows + hjkl, like niri)
+"SUPER+Left" = "focusdir,left"
+"SUPER+Right" = "focusdir,right"
+"SUPER+Up" = "focusdir,up"
+"SUPER+Down" = "focusdir,down"
+"SUPER+h" = "focusdir,left"
+"SUPER+l" = "focusdir,right"
+"SUPER+k" = "focusdir,up"
+"SUPER+j" = "focusdir,down"
+
+# Move windows
+"SUPER+CTRL+Left" = "exchange_client,left"
+"SUPER+CTRL+Right" = "exchange_client,right"
+"SUPER+CTRL+Up" = "exchange_client,up"
+"SUPER+CTRL+Down" = "exchange_client,down"
+"SUPER+CTRL+h" = "exchange_client,left"
+"SUPER+CTRL+l" = "exchange_client,right"
+"SUPER+CTRL+k" = "exchange_client,up"
+"SUPER+CTRL+j" = "exchange_client,down"
+
+# Stack windows into a column (niri consume/expel)
+"SUPER+comma" = "scroller_stack,left"
+"SUPER+period" = "scroller_stack,right"
+
+# Monitors
+"SUPER+SHIFT+Left" = "focusmon,left"
+"SUPER+SHIFT+Right" = "focusmon,right"
+"SUPER+SHIFT+CTRL+Left" = "tagmon,left"
+"SUPER+SHIFT+CTRL+Right" = "tagmon,right"
+
+# Tags (workspaces)
+"SUPER+Page_Down" = "viewtoright,0"
+"SUPER+Page_Up" = "viewtoleft,0"
+"SUPER+u" = "viewtoright,0"
+"SUPER+i" = "viewtoleft,0"
+"SUPER+1" = "view,1,0"
+"SUPER+2" = "view,2,0"
+"SUPER+3" = "view,3,0"
+"SUPER+4" = "view,4,0"
+"SUPER+5" = "view,5,0"
+"SUPER+6" = "view,6,0"
+"SUPER+7" = "view,7,0"
+"SUPER+8" = "view,8,0"
+"SUPER+9" = "view,9,0"
+"SUPER+CTRL+1" = "tag,1,0"
+"SUPER+CTRL+2" = "tag,2,0"
+"SUPER+CTRL+3" = "tag,3,0"
+"SUPER+CTRL+4" = "tag,4,0"
+"SUPER+CTRL+5" = "tag,5,0"
+"SUPER+CTRL+6" = "tag,6,0"
+"SUPER+CTRL+7" = "tag,7,0"
+"SUPER+CTRL+8" = "tag,8,0"
+"SUPER+CTRL+9" = "tag,9,0"
+
+# Screenshots (Noctalia)
+"NONE+Print" = "spawn_shell,noctalia msg screenshot-region"
+"CTRL+Print" = "spawn_shell,noctalia msg screenshot-fullscreen"
+
+[mousebind.default]
+"SUPER+btn_left" = "moveresize,curmove"
+"SUPER+btn_right" = "moveresize,curresize"
+
+[axisbind.default]
+"SUPER+UP" = "viewtoleft_have_client"
+"SUPER+DOWN" = "viewtoright_have_client"
+
+[gesturebind.default]
+"none+left+3" = "focusdir,right"
+"none+right+3" = "focusdir,left"
+"none+up+4" = "toggleoverview"
+"none+down+4" = "toggleoverview"
+"none+left+4" = "viewtoright_have_client"
+"none+right+4" = "viewtoleft_have_client"
+
+[[rule.tag_rule]]
+id = 1
+layout_name = "scroller"
+[[rule.tag_rule]]
+id = 2
+layout_name = "scroller"
+[[rule.tag_rule]]
+id = 3
+layout_name = "scroller"

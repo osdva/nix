@@ -1,0 +1,76 @@
+{
+  description = "osdva's multi-host NixOS + Home Manager configuration";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+
+  outputs =
+    { self, nixpkgs, ... }@inputs:
+    let
+      lib = import ./lib { inherit inputs; };
+      forAllSystems = nixpkgs.lib.genAttrs [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+    in
+    {
+      # One entry per machine. `roles` pick modules/nixos/roles/<role>.nix;
+      # everything machine-specific lives in hosts/<name>/.
+      nixosConfigurations = {
+        tkpd = lib.mkHost {
+          hostname = "tkpd";
+          roles = [
+            "workstation"
+            "laptop"
+            "development"
+          ];
+        };
+
+        # Examples (uncomment after creating hosts/<name>/ — see docs/hosts.md):
+        # desktop = lib.mkHost { hostname = "desktop"; roles = [ "workstation" "development" ]; };
+        # homelab = lib.mkHost { hostname = "homelab"; roles = [ "server" ]; };
+        # pi      = lib.mkHost { hostname = "pi"; system = "aarch64-linux"; roles = [ "server" ]; };
+      };
+
+      # `nix fmt`
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
+
+      # `nix flake check` builds every host's toplevel.
+      checks = forAllSystems (
+        system:
+        nixpkgs.lib.mapAttrs' (name: host: nixpkgs.lib.nameValuePair "host-${name}" host.config.system.build.toplevel) (
+          nixpkgs.lib.filterAttrs (_: host: host.pkgs.stdenv.hostPlatform.system == system) self.nixosConfigurations
+        )
+      );
+
+      # Per-project toolchains instead of mise: `nix flake init -t ~/dev/nix#node`
+      templates = {
+        default = self.templates.devshell;
+        devshell = {
+          path = ./templates/devshell;
+          description = "Generic devShell + direnv";
+        };
+        node = {
+          path = ./templates/node;
+          description = "Node.js / pnpm / bun devShell + direnv";
+        };
+        python = {
+          path = ./templates/python;
+          description = "Python + uv devShell + direnv";
+        };
+        go = {
+          path = ./templates/go;
+          description = "Go devShell + direnv";
+        };
+      };
+    };
+}
