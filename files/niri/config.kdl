@@ -34,6 +34,11 @@ cursor {
     xcursor-size 24
 }
 
+// niri picks a fractional scale for HiDPI panels (1.25 here); keep it native.
+output "eDP-1" {
+    scale 1
+}
+
 // --- Layout ---------------------------------------------------------------------
 // Columns scroll horizontally; workspaces stack vertically and are created as
 // needed (there is always an empty one at the bottom).
