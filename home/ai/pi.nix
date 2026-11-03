@@ -13,8 +13,8 @@
     # pi writes back things like lastChangelogVersion.
     mutableSettings = true;
     settings = {
-      defaultProvider = "openai-codex";
-      defaultModel = "gpt-6.1-sol";
+      defaultProvider = "opencode-go";
+      defaultModel = "glm-5.3-flash";
       defaultThinkingLevel = "medium";
       hideThinkingBlock = true;
       theme = "dark";
@@ -33,16 +33,8 @@
       authHeader = true;
       models = [
         {
-          id = "kimi-k2.5";
-          name = "Kimi K2.5 (OpenCode Go)";
-        }
-        {
-          id = "glm-5";
-          name = "GLM-5 (OpenCode Go)";
-        }
-        {
-          id = "minimax-m2.5";
-          name = "MiniMax M2.5 (OpenCode Go)";
+          id = "glm-5.3-flash";
+          name = "GLM-5.3 Flash (OpenCode Go)";
         }
       ];
     };
