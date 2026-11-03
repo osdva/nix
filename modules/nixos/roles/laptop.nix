@@ -53,7 +53,8 @@ in
     description = "Pick the power profile for the current power source";
     after = [ "power-profiles-daemon.service" ];
     requires = [ "power-profiles-daemon.service" ];
-    wantedBy = [ "multi-user.target" ];
+    # PPD itself is After=multi-user.target, WantedBy=graphical.target.
+    wantedBy = [ "graphical.target" ];
     serviceConfig = {
       Type = "oneshot";
       ExecStart = powerProfileAuto;
