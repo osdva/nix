@@ -13,6 +13,7 @@
       email = "me@osdva.dev";
       base_url = "https://api.bitwarden.eu"; # EU cloud (rbw maps identity too)
       lock_timeout = 3600 * 8;
+      sync_interval = 60 * 5; # agent re-syncs while unlocked (default 1 h), so vault edits show up
       pinentry = lib.mkDefault pkgs.pinentry-curses; # home/desktop/rbw.nix uses the keyring
     };
   };
