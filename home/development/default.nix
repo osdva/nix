@@ -23,6 +23,9 @@
 
     # Spec workflow (pinned ahead of nixpkgs, see overlays/openspec.nix)
     openspec
+
+    # Issue tracker for AI agent workflows; the binary is `bd`
+    beads
   ];
 
   # Podman's Docker-compatible socket.
