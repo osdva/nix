@@ -93,13 +93,48 @@
         "type": "github"
       }
     },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1789684949,
+        "narHash": "sha256-ZKhUe/2IJUq1JhKxKMu8rbkgSGmPP2ZCqlIPn40aGCM=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "e554fab72f81915600f3f449b786fd9af40439a5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "git-hooks": "git-hooks",
         "home-manager": "home-manager",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
+        "windscribe": "windscribe",
         "zen-browser": "zen-browser"
+      }
+    },
+    "windscribe": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_2"
+      },
+      "locked": {
+        "lastModified": 1791274682,
+        "narHash": "sha256-uxVaHr0Pltt84WDbXzoasX+JUJ4m/66xOyV/3MDR3zE=",
+        "owner": "ParkerrDev",
+        "repo": "nixpkgs-windscribe",
+        "rev": "706cebc8f36fd8273dccd7996d24171b8038431f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ParkerrDev",
+        "repo": "nixpkgs-windscribe",
+        "type": "github"
       }
     },
     "zen-browser": {

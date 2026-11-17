@@ -21,6 +21,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+    # Windscribe isn't in nixpkgs either. This flake repacks upstream's Debian
+    # build and supplies the parts that cannot live in a store path: the root
+    # helper daemon, the setgid engine wrapper and the firewall/DNS scripts.
+    #
+    # Deliberately not `inputs.nixpkgs.follows`: our nixpkgs pins patchelf
+    # 0.19.2, which aborts on this repack in autoPatchelfHook with "Assertion
+    # splitIndex == -1 failed", and nixpkgs only restored 0.15.2 after our
+    # current lock. Its own pin builds and passes the flake's VM tests. Drop the
+    # pin on the next nixpkgs bump (check: `nix eval nixpkgs#patchelf.version`).
+    windscribe.url = "github:ParkerrDev/nixpkgs-windscribe";
   };
 
   outputs =

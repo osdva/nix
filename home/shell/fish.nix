@@ -40,6 +40,11 @@
       set fzf_fd_opts --hidden --max-depth 5
 
       tmuxifier init - fish | source
+
+      # hm-session-vars sets PATH once per login environment, so a shell that
+      # inherits a stale or replaced PATH (direnv, nix develop) loses it.
+      # Keep the per-user bins available in every interactive shell.
+      fish_add_path $HOME/.local/bin
     '';
   };
 

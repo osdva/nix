@@ -70,8 +70,12 @@ in
         HostName = "github.com";
         User = "git";
       };
+      "baratorama-homelab" = {
+        HostName = "192.168.3.180";
+        User = "root";
+      };
       # Catch-all last: ssh uses the first value it finds for each option.
-      "*" = lib.hm.dag.entryAfter [ "github.com" ] {
+      "*" = lib.hm.dag.entryAfter [ "github.com" "baratorama-homelab" ] {
         IdentityAgent = bitwardenSock;
         ServerAliveInterval = 60;
       };

@@ -41,6 +41,18 @@
   };
   nixpkgs.config.allowUnfree = true;
 
+  # AppImage runtime requirement, owned here so it doesn't ride
+  # implicitly on GVFS: fuse2 + fuse3, setuid fusermount wrappers in
+  # /run/wrappers/bin. Gear Lever and raw AppImages both need fusermount2.
+  programs.fuse.enable = true;
+
+  # Run AppImages transparently: binfmt maps the `\x7fELF....AI\x0[12]` magic
+  # to appimage-run, which mounts via the FHS env (no libfuse dlopen issue).
+  # Needed for direct execution (Gear Lever entries, ./foo.AppImage); GVFS
+  # enables fuse for us, but don't rely on it.
+  programs.appimage.enable = true;
+  programs.appimage.binfmt = true;
+
   # nh: `nh os switch` / `nh os boot` / `nh os build` with a diff of what changes,
   # `nh search`, and periodic cleanup that always keeps recent generations.
   #
@@ -92,6 +104,20 @@
   networking.networkmanager.enable = lib.mkDefault true;
   networking.firewall.enable = true;
 
+  # Tailnet client: reaches the homelab and the Baratorama VPS (SSH there is
+  # tailnet-only). Join once per machine with `tailscale up`. The tailnet
+  # interface stays firewalled like any other; only UDP 41641 opens, for
+  # direct peer connections.
+  #
+  # --operator hands the daemon's LocalAPI socket to the user, which is what
+  # lets `tailscale up`/`status` run without sudo and what the Trayscale GUI
+  # in home/desktop/tailscale.nix needs to talk to tailscaled at all.
+  services.tailscale = {
+    enable = true;
+    openFirewall = true;
+    extraSetFlags = [ "--operator=${user}" ];
+  };
+
   # Key-only SSH with the keys in keys/osdva.pub (hosts can add more). The port
   # stays closed unless a role opens it (server.nix), so laptops on public
   # networks don't expose sshd.
@@ -132,6 +158,7 @@
     vim
     usbutils
     pciutils
+    lm_sensors
   ];
 
   home-manager = {

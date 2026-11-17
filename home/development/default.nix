@@ -20,6 +20,9 @@
     lazydocker
     lazysql
     rclone
+
+    # Spec workflow (pinned ahead of nixpkgs, see overlays/openspec.nix)
+    openspec
   ];
 
   # Podman's Docker-compatible socket.

@@ -2,6 +2,7 @@
 # Bitwarden (SSH agent + fingerprint unlock).
 {
   config,
+  inputs,
   lib,
   pkgs,
   user,
@@ -67,6 +68,9 @@
   services.power-profiles-daemon.enable = true;
   services.accounts-daemon.enable = true;
   hardware.bluetooth.enable = true;
+  # Spoof Apple's DeviceID so AirPods unlock their locked-down features
+  # (LibrePods). AirPods must be re-paired after this change.
+  hardware.bluetooth.settings.General.DeviceID = "bluetooth:004C:0000:0000";
   hardware.graphics.enable = true;
   services.printing.enable = true;
   services.flatpak.enable = true;
@@ -108,8 +112,13 @@
 
   programs.firefox.enable = true;
 
-  # IVPN: daemon (ivpn-service) + CLI; the tray GUI is in home/desktop/ivpn.nix.
-  services.ivpn.enable = true;
+  # Windscribe: helper daemon, setgid engine wrapper and firewall/DNS scripts.
+  # The tray GUI (and its autostart unit) is home/desktop/windscribe.nix.
+  services.windscribe = {
+    enable = true;
+    # Built against the windscribe flake's own nixpkgs pin; see flake.nix.
+    package = inputs.windscribe.packages.${pkgs.stdenv.hostPlatform.system}.windscribe;
+  };
 
   environment.systemPackages = with pkgs; [
     bitwarden-desktop

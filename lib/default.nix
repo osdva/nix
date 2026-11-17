@@ -29,7 +29,14 @@ in
       };
       modules = [
         { nixpkgs.hostPlatform = system; }
+        {
+          # Repo-wide overlays (e.g. packages broken in nixpkgs).
+          nixpkgs.overlays = [ (import ../overlays) ];
+        }
         inputs.home-manager.nixosModules.home-manager
+        # Packages the Windscribe client and its root helper daemon; enabled by
+        # the workstation role, GUI in home/desktop/windscribe.nix.
+        inputs.windscribe.nixosModules.windscribe
         ../modules/nixos/core
         ../hosts/${hostname}
       ]
