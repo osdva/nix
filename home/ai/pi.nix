@@ -14,12 +14,12 @@
     mutableSettings = true;
     settings = {
       defaultProvider = "opencode-go";
-      defaultModel = "glm-5.3-flash";
-      defaultThinkingLevel = "medium";
+      defaultModel = "deepseek-v4.1-flash";
+      defaultThinkingLevel = "max";
       hideThinkingBlock = true;
       theme = "dark";
       packages = [
-        "npm:pi-claude-bridge@0.9.2"
+        "npm:pi-commandcode-provider"
         "npm:pi-subagents"
         "npm:@antfu/design"
         "npm:pi-elixir"
@@ -31,31 +31,56 @@
       # "!cmd" = pi runs the command and uses its output as the key.
       apiKey = "!${rbwSecret "OPENCODE_API_KEY"}";
       authHeader = true;
-      models = [
-        {
-          id = "glm-5.3-flash";
-          name = "GLM-5.3 Flash (OpenCode Go)";
-        }
-      ];
     };
   };
 
   home.file = {
+    # pi-commandcode-provider takes its key from COMMAND_CODE_API_KEY or an
+    # auth file, not from models.providers. This is the first path it reads;
+    # pi resolves a "!command" key lazily, so nothing is written in the clear.
+    ".commandcode/auth.json".text = builtins.toJSON {
+      command-code = {
+        type = "api";
+        key = "!${rbwSecret "COMMAND_CODE_API_KEY"}";
+      };
+    };
     ".pi/agent/mcp.json".text = builtins.toJSON {
       mcpServers = {
-        figma = {
-          url = "https://mcp.figma.com/mcp";
-          oauth.clientName = "Claude Code";
-          description = "Figma design files, components, variables, and Dev Mode context";
+        # OAuth 2.1 + dynamic client registration; run `pi mcp login linear`
+        # (or /mcp → Sign in) once to authorise.
+        linear = {
+          url = "https://mcp.linear.app/mcp";
+          description = "Linear issues, projects, and documents";
         };
-        firecrawl = {
-          url = "https://mcp.firecrawl.dev/v2/mcp-oauth";
-          description = "Search, scrape, crawl, map, and research the web with Firecrawl";
+        paper = {
+          type = "stdio";
+          command = "/home/osdva/.paper/bin/paper";
+          args = [ "mcp" ];
+        };
+        # Same remote servers as opencode and Claude Code (home/ai/opencode.nix,
+        # home/ai/claude-code.nix). The token reaches pi through the wrapper
+        # below, so it never enters the Nix store.
+        baratorama-admin = {
+          url = "https://baratorama-vps.ribbon-gila.ts.net/admin/mcp";
+          headers.Authorization = "Bearer \${ADMIN_MCP_TOKEN}";
+          description = "Baratorama admin MCP: inbox, catalog search, failure groups, review clusters, operations";
+        };
+        # Storybook's MCP endpoint, served by the design app on port 6006.
+        storybook = {
+          url = "http://127.0.0.1:6006/mcp";
+          description = "Storybook component and page docs for the design system";
         };
       };
     };
     ".pi/agent/extensions".source = ../../files/pi/extensions;
     ".pi/agent/agents".source = ../../files/pi/agents;
     ".pi/agent/prompts".source = ../../files/pi/prompts;
+    ".pi/agent/skills".source = ../../files/skills;
   };
+
+  # pi expands ${ADMIN_MCP_TOKEN} inside mcp.json headers. Hand it the token for
+  # that one process, like opencode does with CONTEXT7_API_KEY.
+  programs.fish.functions.pi = ''
+    ADMIN_MCP_TOKEN=(${rbwSecret "ADMIN_MCP_TOKEN"} 2>/dev/null) command pi $argv
+  '';
 }
