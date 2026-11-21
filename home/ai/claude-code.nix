@@ -2,7 +2,12 @@
 # symlink per skill instead of the whole directory, so the entries Claude and
 # orca manage themselves (~/.claude/skills/orca-*, ~/.claude/skills/synced)
 # stay untouched.
-{ lib, rbwSecret, ... }:
+{
+  lib,
+  llmAgents,
+  rbwSecret,
+  ...
+}:
 let
   skillsDir = ../../files/skills;
   skillNames = builtins.attrNames (
@@ -12,6 +17,7 @@ in
 {
   programs.claude-code = {
     enable = true;
+    package = llmAgents.claude-code;
     # Claude Code also writes settings (/model, /config): merge declared keys
     # into a writable ~/.claude/settings.json instead of a read-only link.
     mutableSettings = true;
@@ -31,6 +37,11 @@ in
       storybook = {
         type = "http";
         url = "http://127.0.0.1:6006/mcp";
+      };
+      # Figma design context. Authorise over OAuth once via `/mcp`.
+      figma = {
+        type = "http";
+        url = "https://mcp.figma.com/mcp";
       };
     };
   };

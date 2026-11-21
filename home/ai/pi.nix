@@ -1,9 +1,15 @@
 # pi coding agent: settings, providers, MCP servers, and the extensions,
 # agents and prompts kept in files/pi/.
-{ pkgs, rbwSecret, ... }:
+{
+  pkgs,
+  llmAgents,
+  rbwSecret,
+  ...
+}:
 {
   programs.pi-coding-agent = {
     enable = true;
+    package = llmAgents.pi;
     # pi installs its `npm:` packages itself and needs these on PATH.
     extraPackages = with pkgs; [
       nodejs
@@ -69,6 +75,11 @@
         storybook = {
           url = "http://127.0.0.1:6006/mcp";
           description = "Storybook component and page docs for the design system";
+        };
+        # Figma design context. Authorise over OAuth once: `pi mcp login figma`.
+        figma = {
+          url = "https://mcp.figma.com/mcp";
+          description = "Figma files, components, and design context";
         };
       };
     };
