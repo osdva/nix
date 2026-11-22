@@ -2,6 +2,7 @@
 # agents and prompts kept in files/pi/.
 {
   pkgs,
+  agentSkillsTree,
   llmAgents,
   rbwSecret,
   ...
@@ -87,7 +88,8 @@
     ".pi/agent/extensions".source = ../../files/pi/extensions;
     ".pi/agent/agents".source = ../../files/pi/agents;
     ".pi/agent/prompts".source = ../../files/pi/prompts;
-    ".pi/agent/skills".source = ../../files/skills;
+    # The source pack folders are flattened into one store tree of skill links.
+    ".pi/agent/skills".source = agentSkillsTree;
   };
 
   # pi expands ${ADMIN_MCP_TOKEN} inside mcp.json headers. Hand it the token for

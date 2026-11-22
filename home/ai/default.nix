@@ -14,8 +14,60 @@
 }:
 let
   skillsDir = ../../files/skills;
-  skillNames = builtins.attrNames (
-    lib.filterAttrs (_: type: type == "directory") (builtins.readDir skillsDir)
+  # Source packs keep their upstream layout (matt/<skill>, uphiago/<category>/<skill>,
+  # local/<skill>); agents get one flat entry per SKILL.md directory.
+  discoverSkills =
+    dir:
+    lib.concatLists (
+      lib.mapAttrsToList (
+        name: type:
+        if lib.hasPrefix "." name then
+          [ ]
+        else
+          let
+            path = dir + "/${name}";
+          in
+          if type == "directory" then
+            (
+              if builtins.pathExists (path + "/SKILL.md") then
+                [
+                  {
+                    inherit name;
+                    source = path;
+                  }
+                ]
+              else
+                discoverSkills path
+            )
+          else
+            [ ]
+      ) (builtins.readDir dir)
+    );
+  agentSkills =
+    let
+      discovered = discoverSkills skillsDir;
+      names = map (s: s.name) discovered;
+      duplicates = lib.subtractLists (lib.unique names) names;
+    in
+    assert lib.assertMsg (
+      duplicates == [ ]
+    ) "duplicate skill names: ${lib.concatStringsSep ", " duplicates}";
+    discovered;
+  agentSkillsTree = pkgs.linkFarm "agent-skills" (
+    map (s: {
+      inherit (s) name;
+      path = s.source;
+    }) agentSkills
+    ++ [
+      {
+        name = "LICENSE.mattpocock-skills.md";
+        path = skillsDir + "/matt/LICENSE";
+      }
+      {
+        name = "LICENSE.uphiago-recon-skills.md";
+        path = skillsDir + "/uphiago/LICENSE";
+      }
+    ]
   );
   # Pinned by flake.lock; update with `nix flake update llm-agents`.
   llmAgents = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
@@ -44,15 +96,21 @@ in
 
   _module.args = {
     rbwSecret = field: "rbw get --field ${field} API-Keys";
-    inherit llmAgents opencodeCli;
+    inherit
+      agentSkills
+      agentSkillsTree
+      llmAgents
+      opencodeCli
+      ;
   };
 
   # opencode and Orca both discover ~/.agents/skills. Link each shared skill
-  # individually so entries they manage themselves stay untouched.
+  # individually so entries they manage themselves stay untouched. The pack
+  # folders are flattened here into one directory per skill.
   home.file = lib.listToAttrs (
-    map (name: {
-      name = ".agents/skills/${name}";
-      value.source = skillsDir + "/${name}";
-    }) skillNames
+    map (s: {
+      name = ".agents/skills/${s.name}";
+      value.source = s.source;
+    }) agentSkills
   );
 }

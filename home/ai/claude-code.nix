@@ -1,19 +1,13 @@
 # Skills are shared with pi and opencode (files/skills). Claude gets one
 # symlink per skill instead of the whole directory, so the entries Claude and
 # orca manage themselves (~/.claude/skills/orca-*, ~/.claude/skills/synced)
-# stay untouched.
+# stay untouched. The pack folders are flattened by agentSkills.
 {
-  lib,
+  agentSkills,
   llmAgents,
   rbwSecret,
   ...
 }:
-let
-  skillsDir = ../../files/skills;
-  skillNames = builtins.attrNames (
-    lib.filterAttrs (_: type: type == "directory") (builtins.readDir skillsDir)
-  );
-in
 {
   programs.claude-code = {
     enable = true;
@@ -57,10 +51,10 @@ in
     ADMIN_MCP_TOKEN=(${rbwSecret "ADMIN_MCP_TOKEN"} 2>/dev/null) command claude $argv
   '';
 
-  home.file = lib.listToAttrs (
-    map (name: {
-      name = ".claude/skills/${name}";
-      value.source = skillsDir + "/${name}";
-    }) skillNames
+  home.file = builtins.listToAttrs (
+    map (s: {
+      name = ".claude/skills/${s.name}";
+      value.source = s.source;
+    }) agentSkills
   );
 }
