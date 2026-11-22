@@ -26,9 +26,16 @@ in
       model = "opus";
     };
     # Same remote servers as opencode and pi (home/ai/opencode.nix,
-    # home/ai/pi.nix). The token is expanded from the environment, which the
-    # fish wrapper below fills from Bitwarden.
+    # home/ai/pi.nix). The admin token is expanded from the environment, which
+    # the fish wrapper below fills from Bitwarden; Linear uses headersHelper.
     mcpServers = {
+      # Linear API key from Bitwarden (field LINEAR_API_KEY). The helper runs at
+      # connection time and prints the Authorization header as JSON.
+      linear = {
+        type = "http";
+        url = "https://mcp.linear.app/mcp";
+        headersHelper = "printf '{\"Authorization\": \"Bearer %s\"}' \"$(${rbwSecret "LINEAR_API_KEY"} 2>/dev/null)\"";
+      };
       baratorama-admin = {
         type = "http";
         url = "https://baratorama-vps.ribbon-gila.ts.net/admin/mcp";

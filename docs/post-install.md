@@ -53,7 +53,7 @@ git log --show-signature -1                   # Good "git" signature ...
 ## 3. API keys (rbw)
 
 Keys live in the Bitwarden item **`API-Keys`**, one custom field each
-(`OPENCODE_API_KEY`, `EXA_API_KEY`, `CONTEXT7_API_KEY`, ...).
+(`OPENCODE_API_KEY`, `EXA_API_KEY`, `CONTEXT7_API_KEY`, `LINEAR_API_KEY`, ...).
 
 ```sh
 rbw register                                  # once per machine, see below

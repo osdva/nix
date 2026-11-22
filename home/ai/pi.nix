@@ -52,10 +52,11 @@
     };
     ".pi/agent/mcp.json".text = builtins.toJSON {
       mcpServers = {
-        # OAuth 2.1 + dynamic client registration; run `pi mcp login linear`
-        # (or /mcp → Sign in) once to authorise.
+        # Linear API key from Bitwarden (field LINEAR_API_KEY). pi runs the
+        # !command at connection time, so no secret lands in mcp.json.
         linear = {
           url = "https://mcp.linear.app/mcp";
+          headers.Authorization = "!echo Bearer $(${rbwSecret "LINEAR_API_KEY"})";
           description = "Linear issues, projects, and documents";
         };
         paper = {
