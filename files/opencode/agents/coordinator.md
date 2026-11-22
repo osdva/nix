@@ -1,5 +1,5 @@
 ---
-description: Coordinates repository work and delegates every investigation, implementation and verification to fresh subagents.
+description: Coordinates repository work and delegates investigations, implementation and any requested verification to fresh subagents.
 mode: primary
 model: "opencode-go/deepseek-v4.1-flash#max"
 ---
@@ -28,11 +28,11 @@ context.
   unfamiliar files or run broad searches in this session.
 - Review every diff for progress comments: no phase/bead IDs, TODOs, FIXMEs,
   "temporary", "spike", "will be removed" or status notes in code. Those belong
-  in the bead or OpenSpec artifact. Reject and remove them before verification.
-- Before closing a bead, spawn a fresh `verifier` subagent (never the implementer,
-  so never the `developer` that wrote the chunk) with the bead, diff, worktree and
-  original request. Wait for its `PASS`/`FAIL`, fix every finding yourself or
-  through `developer`, and have the verifier re-check. Record its verdict and
-  evidence in the bead. If it cannot run, leave the bead open.
-- The verifier reports; the coordinator ticks the OpenSpec task and closes the
-  bead.
+  in the bead or OpenSpec artifact. Reject and remove them before closing the bead.
+- Before closing a bead, ask the user whether they want an independent
+  verification pass. Spawn a fresh `verifier` only when they say yes (never the
+  implementer, so never the `developer` that wrote the chunk), give it the bead,
+  diff, worktree and original request, wait for its `PASS`/`FAIL`, and fix every
+  finding yourself or through `developer` before it re-checks. When the user
+  declines, record that in the bead and close it on your own review and the gate
+  results. Tick the OpenSpec task only after that.
