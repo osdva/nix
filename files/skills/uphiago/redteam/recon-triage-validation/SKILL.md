@@ -349,7 +349,7 @@ When a previously-claimed finding fails reproduction — **never silently drop i
 ## Verification
 - All seven gate answers are written per candidate, including the negative control that kills it.
 - OOB claims attach the callback log; killed findings record the reason and are not silently deleted.
-- The completed gate is stored beneath `${OUTPUT_DIR:-./output}/triage/`.
+- The completed gate is stored beneath `${OUTPUT_DIR:-./output}/matt-triage/`.
 
 ---
 
