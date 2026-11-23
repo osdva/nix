@@ -5,6 +5,7 @@
   agentSkillsTree,
   llmAgents,
   rbwSecret,
+  rtkInit,
   ...
 }:
 {
@@ -85,10 +86,13 @@
         };
       };
     };
-    ".pi/agent/extensions".source = ../../files/pi/extensions;
+    ".pi/agent/extensions".source = pkgs.runCommandLocal "pi-extensions" { } ''
+      mkdir -p "$out"
+      ln -s ${../../files/pi/extensions}/* "$out/"
+      ln -s ${rtkInit}/.pi/agent/extensions/rtk.ts "$out/rtk.ts"
+    '';
     ".pi/agent/agents".source = ../../files/pi/agents;
     ".pi/agent/prompts".source = ../../files/pi/prompts;
-    # The source pack folders are flattened into one store tree of skill links.
     ".pi/agent/skills".source = agentSkillsTree;
   };
 

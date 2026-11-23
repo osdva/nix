@@ -1,7 +1,12 @@
 # opencode only reads {env:...} from its config, so the fish wrapper below
 # hands it the Context7 key, the admin MCP token and the Linear API key for
 # that one process.
-{ opencodeCli, rbwSecret, ... }:
+{
+  opencodeCli,
+  rbwSecret,
+  rtkInit,
+  ...
+}:
 {
   programs.opencode = {
     enable = true;
@@ -32,9 +37,9 @@
           url = "https://mcp.context7.com/mcp";
           headers.CONTEXT7_API_KEY = "{env:CONTEXT7_API_KEY}";
         };
-        # Same MCP servers as pi (home/ai/pi.nix). Linear authenticates with an API
-        # key from Bitwarden (field LINEAR_API_KEY). The plugin below injects the
-        # header; {env:...} is the fallback for shell launches.
+        # Linear authenticates with an API key from Bitwarden (field
+        # LINEAR_API_KEY). The plugin below injects the header; {env:...} is the
+        # fallback for shell launches.
         # oauth = false so a missing key fails instead of opening a sign-in prompt.
         linear = {
           type = "remote";
@@ -91,5 +96,6 @@
     # Reads LINEAR_API_KEY from Bitwarden and injects the Linear MCP header.
     "opencode/plugins/linear-token/index.js".source =
       ../../files/opencode/plugins/linear-token/index.js;
+    "opencode/plugins/rtk.ts".source = "${rtkInit}/.config/opencode/plugins/rtk.ts";
   };
 }

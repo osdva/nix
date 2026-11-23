@@ -1,4 +1,3 @@
-# Coding agents: Claude Code, pi, opencode, Antigravity CLI, Orca and T3 Code.
 # Imported by home/development.
 #
 # API keys are never in this repo: they're read from Bitwarden at runtime with
@@ -14,8 +13,8 @@
 }:
 let
   skillsDir = ../../files/skills;
-  # Source packs keep their upstream layout (matt/<skill>, uphiago/<category>/<skill>,
-  # local/<skill>); agents get one flat entry per SKILL.md directory.
+  # Source packs keep their upstream folder layout; agents get one flat entry
+  # per SKILL.md directory.
   discoverSkills =
     dir:
     lib.concatLists (
@@ -67,6 +66,14 @@ let
         name = "LICENSE.uphiago-recon-skills.md";
         path = skillsDir + "/uphiago/LICENSE";
       }
+      {
+        name = "LICENSE.pstack.md";
+        path = skillsDir + "/pstack/LICENSE";
+      }
+      {
+        name = "LICENSE.emil-skills.md";
+        path = skillsDir + "/emil/LICENSE";
+      }
     ]
   );
   # Pinned by flake.lock; update with `nix flake update llm-agents`.
@@ -83,11 +90,25 @@ let
         mkdir -p $out/bin
         ln -s ${lib.getExe llmAgents.opencode2} $out/bin/opencode
       '';
+  # RTK (token-reduction proxy) generates its per-agent hooks, plugins and rules
+  # with the pinned llmAgents.rtk.
+  rtkInit = pkgs.runCommandLocal "rtk-init-${llmAgents.rtk.version}" { } ''
+    export HOME="$TMPDIR/home"
+    export XDG_CONFIG_HOME="$HOME/.config"
+    mkdir -p "$HOME" "$XDG_CONFIG_HOME"
+    ${lib.getExe llmAgents.rtk} init -g --opencode --auto-patch </dev/null >/dev/null 2>&1 || true
+    ${lib.getExe llmAgents.rtk} init -g --agent pi --auto-patch </dev/null >/dev/null 2>&1 || true
+    ${lib.getExe llmAgents.rtk} init -g --agent antigravity --auto-patch </dev/null >/dev/null 2>&1 || true
+    ${lib.getExe llmAgents.rtk} init -g --codex </dev/null >/dev/null 2>&1 || true
+    mkdir -p "$out"
+    cp -r "$HOME/." "$out/"
+  '';
 in
 {
   imports = [
     ./agy.nix
     ./claude-code.nix
+    ./codex.nix
     ./opencode.nix
     ./orca.nix
     ./pi.nix
@@ -101,12 +122,16 @@ in
       agentSkillsTree
       llmAgents
       opencodeCli
+      rtkInit
       ;
   };
 
+  home.packages = [
+    llmAgents.rtk
+  ];
+
   # opencode and Orca both discover ~/.agents/skills. Link each shared skill
-  # individually so entries they manage themselves stay untouched. The pack
-  # folders are flattened here into one directory per skill.
+  # individually so entries they manage themselves stay untouched.
   home.file = lib.listToAttrs (
     map (s: {
       name = ".agents/skills/${s.name}";

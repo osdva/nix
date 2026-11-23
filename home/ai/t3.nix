@@ -12,6 +12,7 @@ let
       llmAgents.claude-code
       llmAgents.pi
       llmAgents.antigravity-cli
+      llmAgents.rtk
     ];
   };
 in

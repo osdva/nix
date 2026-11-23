@@ -1,27 +1,36 @@
 # Skills are shared with pi and opencode (files/skills). Claude gets one
 # symlink per skill instead of the whole directory, so the entries Claude and
 # orca manage themselves (~/.claude/skills/orca-*, ~/.claude/skills/synced)
-# stay untouched. The pack folders are flattened by agentSkills.
+# stay untouched.
 {
   agentSkills,
   llmAgents,
   rbwSecret,
+  rtkInit,
   ...
 }:
 {
   programs.claude-code = {
     enable = true;
     package = llmAgents.claude-code;
-    # Claude Code also writes settings (/model, /config): merge declared keys
-    # into a writable ~/.claude/settings.json instead of a read-only link.
     mutableSettings = true;
     settings = {
       theme = "dark-daltonized";
       model = "opus";
+      hooks.PreToolUse = [
+        {
+          matcher = "Bash";
+          hooks = [
+            {
+              type = "command";
+              command = "rtk hook claude";
+            }
+          ];
+        }
+      ];
     };
-    # Same remote servers as opencode and pi (home/ai/opencode.nix,
-    # home/ai/pi.nix). The admin token is expanded from the environment, which
-    # the fish wrapper below fills from Bitwarden; Linear uses headersHelper.
+    # The admin token is expanded from the environment, which the fish wrapper
+    # below fills from Bitwarden; Linear uses headersHelper.
     mcpServers = {
       # Linear API key from Bitwarden (field LINEAR_API_KEY). The helper runs at
       # connection time and prints the Authorization header as JSON.
@@ -51,10 +60,15 @@
     ADMIN_MCP_TOKEN=(${rbwSecret "ADMIN_MCP_TOKEN"} 2>/dev/null) command claude $argv
   '';
 
-  home.file = builtins.listToAttrs (
-    map (s: {
-      name = ".claude/skills/${s.name}";
-      value.source = s.source;
-    }) agentSkills
-  );
+  home.file =
+    builtins.listToAttrs (
+      map (s: {
+        name = ".claude/skills/${s.name}";
+        value.source = s.source;
+      }) agentSkills
+    )
+    // {
+      ".claude/RTK.md".source = "${rtkInit}/.claude/RTK.md";
+      ".claude/CLAUDE.md".source = "${rtkInit}/.claude/CLAUDE.md";
+    };
 }
