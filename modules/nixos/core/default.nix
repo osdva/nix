@@ -22,6 +22,13 @@
         "root"
         "@wheel"
       ];
+      # Numtide's cache serves the source-built llm-agents.nix packages
+      # (codex, rtk, ...). Hits require llm-agents to build against its own
+      # nixpkgs pin (see flake.nix).
+      extra-substituters = [ "https://cache.numtide.com" ];
+      extra-trusted-public-keys = [
+        "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+      ];
       # Emergency GC: if free space drops below 5 GiB during a build, Nix
       # collects garbage until 20 GiB are free (only unreferenced paths).
       min-free = 5 * 1024 * 1024 * 1024;

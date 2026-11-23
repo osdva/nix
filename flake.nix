@@ -7,12 +7,13 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # AI coding agents (claude-code, opencode, pi, agy, orca, t3) packaged
-    # and updated daily by Numtide.
-    llm-agents = {
-      url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # Numtide's packaged AI agents, bumped daily. Deliberately no
+    # `inputs.nixpkgs.follows`: their CI builds against the nixpkgs pinned in
+    # their own lock, and the Numtide binary cache only hits for those exact
+    # derivations. Following our nixpkgs would force source builds (codex is a
+    # large Rust build) on every update. The cache is configured in
+    # modules/nixos/core/default.nix.
+    llm-agents.url = "github:numtide/llm-agents.nix";
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware";
       inputs.nixpkgs.follows = "nixpkgs";
