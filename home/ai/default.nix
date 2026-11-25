@@ -111,6 +111,7 @@ in
     ./codex.nix
     ./opencode.nix
     ./orca.nix
+    ./paseo.nix
     ./pi.nix
     ./t3.nix
   ];
